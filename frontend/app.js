@@ -124,12 +124,12 @@ function toggleSatelliteView() {
     if (isSatelliteView) {
         map.removeLayer(streetLayer);
         map.addLayer(satelliteLayer);
-        toggleBtn.textContent = '🗺️ Street View';
+        toggleBtn.textContent = 'Street View';
         toggleBtn.classList.add('active');
     } else {
         map.removeLayer(satelliteLayer);
         map.addLayer(streetLayer);
-        toggleBtn.textContent = '🛰️ Toggle Satellite View';
+        toggleBtn.textContent = 'Satellite View';
         toggleBtn.classList.remove('active');
     }
 }
