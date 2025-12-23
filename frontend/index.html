@@ -89,14 +89,19 @@
                             -->
                         </div>
 
-                        <!-- Panel Efficiency -->
+                        <!-- Panel Type Selection -->
                         <div class="form-group">
                             <label for="panelEfficiency">
-                                Panel Efficiency (%)
-                                <span class="tooltip" title="Typical solar panels have 15-22% efficiency">ℹ️</span>
+                                Panel Type
+                                <span class="tooltip" title="Select your solar panel type">ℹ️</span>
                             </label>
-                            <input type="number" id="panelEfficiency" min="15" max="22" value="18" step="0.5" required>
-                            <div class="range-hint">Range: 15% - 22% (Default: 18%)</div>
+                            <select id="panelEfficiency" required>
+                                <option value="16">Standard Polycrystalline (16%)</option>
+                                <option value="18" selected>Monocrystalline (18%)</option>
+                                <option value="20">High-Efficiency Mono (20%)</option>
+                                <option value="22">Premium - SunPower/LG (22%)</option>
+                            </select>
+                            <div class="range-hint">Higher efficiency = More power from same roof area</div>
                         </div>
 
                         <!-- Electricity Rate -->
