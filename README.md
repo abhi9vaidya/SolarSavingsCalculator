@@ -189,13 +189,13 @@ GET /api/solar?lat=28.6139&lon=77.2090
 
 ## 📝 License
 
-This project is for educational purposes (6th Semester Major Project).
+This project is for educational purposes (6th Semester NON CRT Project).
 
 ---
 
 ## 👤 Author
 
-**Student Project** - Solar Potential Calculator
+**Jiya Divyanshi Pandita** & **Abhinav Vaidya** 
 
 ---
 
