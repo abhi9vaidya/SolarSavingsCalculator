@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Solar Potential Calculator - Estimate your rooftop solar energy potential using real-time NASA solar data and satellite imagery">
-    
+    <meta name="description"
+        content="Solar Potential Calculator - Estimate your rooftop solar energy potential using real-time NASA solar data and satellite imagery">
+
     <title>Solar Potential Calculator | Estimate Your Solar Energy Savings</title>
-    
+
     <!-- Leaflet CSS for Maps -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
-        crossorigin="">
-    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Custom Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <!-- Header Section -->
     <header class="header">
@@ -38,25 +40,21 @@
     <main class="main-content">
         <div class="container">
             <div class="grid-layout">
-                
+
                 <!-- Left Panel: Input Form -->
                 <section class="card input-section">
                     <h2 class="card-title">
                         <span class="icon">📍</span>
                         Location & Parameters
                     </h2>
-                    
+
                     <form id="solarForm" class="solar-form">
                         <!-- Location Input -->
                         <div class="form-group">
                             <label for="locationSearch">Search Location</label>
                             <div class="search-input-wrapper">
-                                <input 
-                                    type="text" 
-                                    id="locationSearch" 
-                                    placeholder="Enter city name or address..."
-                                    autocomplete="off"
-                                >
+                                <input type="text" id="locationSearch" placeholder="Enter city name or address..."
+                                    autocomplete="off">
                                 <button type="button" id="searchBtn" class="btn-icon" title="Search location">
                                     🔍
                                 </button>
@@ -68,23 +66,11 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="latitude">Latitude</label>
-                                <input 
-                                    type="number" 
-                                    id="latitude" 
-                                    step="0.0001" 
-                                    placeholder="e.g., 28.6139"
-                                    required
-                                >
+                                <input type="number" id="latitude" step="any" placeholder="e.g., 28.6139" required>
                             </div>
                             <div class="form-group">
                                 <label for="longitude">Longitude</label>
-                                <input 
-                                    type="number" 
-                                    id="longitude" 
-                                    step="0.0001" 
-                                    placeholder="e.g., 77.2090"
-                                    required
-                                >
+                                <input type="number" id="longitude" step="any" placeholder="e.g., 77.2090" required>
                             </div>
                         </div>
 
@@ -94,14 +80,7 @@
                                 Roof Area (m²)
                                 <span class="tooltip" title="Enter the usable roof area in square meters">ℹ️</span>
                             </label>
-                            <input 
-                                type="number" 
-                                id="roofArea" 
-                                min="1" 
-                                max="10000" 
-                                placeholder="e.g., 50"
-                                required
-                            >
+                            <input type="number" id="roofArea" min="1" max="10000" placeholder="e.g., 50" required>
                             <!-- 
                                 Note: Roof area is manually entered by the user.
                                 Satellite imagery is used only for visualization and location validation,
@@ -116,15 +95,7 @@
                                 Panel Efficiency (%)
                                 <span class="tooltip" title="Typical solar panels have 15-22% efficiency">ℹ️</span>
                             </label>
-                            <input 
-                                type="number" 
-                                id="panelEfficiency" 
-                                min="15" 
-                                max="22" 
-                                value="18" 
-                                step="0.5"
-                                required
-                            >
+                            <input type="number" id="panelEfficiency" min="15" max="22" value="18" step="0.5" required>
                             <div class="range-hint">Range: 15% - 22% (Default: 18%)</div>
                         </div>
 
@@ -134,15 +105,7 @@
                                 Electricity Rate (₹/kWh)
                                 <span class="tooltip" title="Your current electricity cost per unit">ℹ️</span>
                             </label>
-                            <input 
-                                type="number" 
-                                id="electricityRate" 
-                                min="1" 
-                                max="20" 
-                                value="8" 
-                                step="0.5"
-                                required
-                            >
+                            <input type="number" id="electricityRate" min="1" max="20" value="8" step="0.5" required>
                         </div>
 
                         <!-- Submit Button -->
@@ -162,19 +125,19 @@
                         <span class="icon">🗺️</span>
                         Select Location
                     </h2>
-                    
+
                     <!-- Map Controls -->
                     <div class="map-controls">
                         <button type="button" id="toggleSatellite" class="btn-secondary">
                             🛰️ Toggle Satellite View
                         </button>
                     </div>
-                    
+
                     <!-- Map Container -->
                     <div id="map" class="map-container"></div>
-                    
+
                     <p class="map-hint">
-                        <strong>Tip:</strong> Click on the map to select your location. 
+                        <strong>Tip:</strong> Click on the map to select your location.
                         Use satellite view to verify your roof location.
                     </p>
                 </section>
@@ -257,13 +220,13 @@
                 <!-- Data Source Note -->
                 <div class="data-note">
                     <p>
-                        <strong>Data Source:</strong> Solar irradiance data from 
+                        <strong>Data Source:</strong> Solar irradiance data from
                         <a href="https://power.larc.nasa.gov/" target="_blank" rel="noopener">NASA POWER API</a>
                         (All Sky Surface Shortwave Downward Irradiance)
                     </p>
                     <p class="disclaimer">
-                        <em>Note: This is an educational estimate. Actual solar generation may vary based on 
-                        panel orientation, shading, system losses, and local weather conditions.</em>
+                        <em>Note: This is an educational estimate. Actual solar generation may vary based on
+                            panel orientation, shading, system losses, and local weather conditions.</em>
                     </p>
                 </div>
             </section>
@@ -290,15 +253,15 @@
 
     <!-- Scripts -->
     <!-- Leaflet JS for Maps -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
-        crossorigin=""></script>
-    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     <!-- Chart.js for Data Visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     <!-- Application Scripts -->
     <script src="charts.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>
