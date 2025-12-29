@@ -1,63 +1,42 @@
-// ====================================
-// Result Card Component
-// ====================================
-// This is a reusable card that displays one result metric
-// We use it 4 times: Energy, Savings, CO2, and Irradiance
-
 import React, { useEffect, useState } from 'react';
 
-function ResultCard({ icon, title, value, unit, description, currency, colorClass }) {
-    // State for animated value (starts at 0 and counts up)
+// card for single stat with animation
+const ResultCard = ({ title, value, unit, icon, description, color }) => {
     const [displayValue, setDisplayValue] = useState(0);
 
-    // Animate the number when the value changes
+    // animate number count up
     useEffect(() => {
-        // Start from 0
-        let currentValue = 0;
-        const targetValue = value;
-        const duration = 1000; // 1 second animation
-        const steps = 60; // 60 frames for smooth animation
-        const increment = targetValue / steps;
-        const stepDuration = duration / steps;
+        let start = 0;
+        const end = parseInt(value); // target number
+        if (start === end) return;
 
-        // Create an interval that updates the number gradually
-        const timer = setInterval(() => {
-            currentValue += increment;
-
-            // If we've reached or passed the target, stop and set final value
-            if (currentValue >= targetValue) {
-                setDisplayValue(Math.round(targetValue));
+        // rapid update loop
+        let timer = setInterval(() => {
+            start += Math.ceil(end / 50); // step size
+            if (start >= end) {
                 clearInterval(timer);
-            } else {
-                setDisplayValue(Math.round(currentValue));
+                start = end;
             }
-        }, stepDuration);
+            setDisplayValue(start);
+        }, 20); // speed
 
-        // Clean up the interval when component unmounts
         return () => clearInterval(timer);
-    }, [value]); // Re-run animation when value changes
+    }, [value]);
 
     return (
-        <div className={`result-card ${colorClass}`}>
-            {/* Icon (emoji) for visual appeal */}
-            <div className="result-icon">{icon}</div>
-
-            <div className="result-content">
-                {/* Title (e.g., "Annual Energy Generation") */}
-                <h3>{title}</h3>
-
-                {/* The main number with optional currency symbol and unit */}
-                <div className="result-value">
-                    {currency && <span className="currency">{currency}</span>}
-                    <span>{displayValue.toLocaleString('en-IN')}</span>
-                    {unit && <span className="unit">{unit}</span>}
+        <div className={`result-card border-${color}`}>
+            <div className="card-icon">{icon}</div>
+            <div className="card-content">
+                <h4 className="card-title">{title}</h4>
+                <div className="card-value">
+                    {/* format number with commas like 1,000 */}
+                    {displayValue.toLocaleString()}
+                    <span className="unit">{unit}</span>
                 </div>
-
-                {/* Description explaining what this number means */}
-                <p className="result-desc">{description}</p>
+                <p className="card-desc">{description}</p>
             </div>
         </div>
     );
-}
+};
 
 export default ResultCard;

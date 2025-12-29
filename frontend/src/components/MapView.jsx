@@ -1,118 +1,88 @@
-// ====================================
-// Map View Component
-// ====================================
-// This shows an interactive map where users can click to select their location
-// Uses Leaflet library with OpenStreetMap and satellite imagery
-
-import React, { useState } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
+import React, { useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
+// fix leaflet icon issue
 import 'leaflet/dist/leaflet.css';
-import { DEFAULT_LOCATION } from '../utils/constants';
+import L from 'leaflet';
 
-// Fix for default marker icon (Leaflet + React issue)
-// This ensures the location pin shows up correctly
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+let DefaultIcon = L.icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
 });
 
-// Custom marker icon (emoji pin)
-const customIcon = L.divIcon({
-    html: '<div style="font-size: 32px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">📍</div>',
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    className: 'custom-marker'
-});
+L.Marker.prototype.options.icon = DefaultIcon;
 
-/**
- * Map Click Handler Component
- * This invisible component listens for clicks on the map
- * When you click, it updates the marker position
- */
-function MapClickHandler({ onLocationSelect }) {
-    useMapEvents({
-        click: (e) => {
-            // Get the coordinates where the user clicked
-            const { lat, lng } = e.latlng;
-            // Tell the parent component about the new location
-            onLocationSelect(lat, lng);
-        }
-    });
-    return null; // This component doesn't render anything visible
+// component to update map center when position changes
+function ChangeView({ center }) {
+    const map = useMap();
+    useEffect(() => {
+        map.setView(center, map.getZoom());
+    }, [center, map]);
+    return null;
 }
 
-function MapView({ position, onLocationSelect }) {
-    // State to track which map view is active (street or satellite)
-    const [isSatelliteView, setIsSatelliteView] = useState(false);
+// component to handle map clicks
+function LocationMarker({ onLocationSelect }) {
+    useMapEvents({
+        click(e) {
+            // click -> send lat/lng to parent
+            onLocationSelect(e.latlng.lat, e.latlng.lng);
+        },
+    });
+    return null;
+}
 
-    // Toggle between street view and satellite view
-    const toggleSatelliteView = () => {
-        setIsSatelliteView(!isSatelliteView);
-    };
+const MapView = ({ position, onLocationSelect }) => {
+    // default view (India)
+    const defaultCenter = [20.5937, 78.9629];
+    const displayPosition = [position.lat || defaultCenter[0], position.lng || defaultCenter[1]];
 
     return (
-        <div className="card map-section">
-            <h2 className="card-title">Select Location</h2>
-
-            {/* Button to switch between map views */}
-            <div className="map-controls">
-                <button
-                    type="button"
-                    onClick={toggleSatelliteView}
-                    className={`btn-secondary ${isSatelliteView ? 'active' : ''}`}
-                >
-                    {isSatelliteView ? 'Street View' : 'Satellite View'}
-                </button>
+        <div className="map-container card">
+            <div className="card-header">
+                <h2>Select Location</h2>
+                <p className="subtitle">Click on map or search to pinpoint roof</p>
             </div>
 
-            {/* The actual map */}
-            <div className="map-container">
+            <div className="map-wrapper">
                 <MapContainer
-                    center={[position.lat, position.lng]}
-                    zoom={DEFAULT_LOCATION.zoom}
-                    style={{ height: '100%', width: '100%' }}
+                    center={displayPosition}
+                    zoom={5}
                     scrollWheelZoom={true}
+                    style={{ height: '100%', width: '100%' }}
                 >
-                    {/* Map tiles - either street view or satellite view */}
-                    {isSatelliteView ? (
-                        // Satellite imagery from ESRI (free alternative to Mapbox)
-                        <TileLayer
-                            attribution='Tiles &copy; Esri'
-                            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                            maxZoom={19}
-                        />
-                    ) : (
-                        // Street map from OpenStreetMap (free and open source)
-                        <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            maxZoom={19}
-                        />
-                    )}
+                    {/* standard openstreetmap tiles */}
+                    <TileLayer
+                        attribution='&copy; OpenStreetMap contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
 
-                    {/* The pin showing selected location */}
+                    {/* satellite view (esri) */}
+                    <TileLayer
+                        attribution='Tiles &copy; Esri'
+                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                        opacity={0.6} // overlay effect
+                    />
+
+                    <ChangeView center={displayPosition} />
+                    <LocationMarker onLocationSelect={onLocationSelect} />
+
+                    {/* show marker if pos exists */}
                     {position.lat && position.lng && (
-                        <Marker
-                            position={[position.lat, position.lng]}
-                            icon={customIcon}
-                        />
+                        <Marker position={[position.lat, position.lng]} />
                     )}
-
-                    {/* Invisible component that handles map clicks */}
-                    <MapClickHandler onLocationSelect={onLocationSelect} />
                 </MapContainer>
-            </div>
 
-            {/* Helpful hint for users */}
-            <p className="map-hint">
-                <strong>Tip:</strong> Click on the map to select your location.
-                Use satellite view to verify your roof location.
-            </p>
+                <div className="map-legend">
+                    <small>Satellite view enabled for better roof visibility</small>
+                </div>
+            </div>
         </div>
     );
-}
+};
 
 export default MapView;

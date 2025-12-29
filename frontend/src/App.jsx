@@ -1,9 +1,3 @@
-// ====================================
-// Main App Component
-// ====================================
-// This is the brain of our application!
-// It manages all the data and coordinates between all the components
-
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import CalculatorForm from './components/CalculatorForm';
@@ -15,82 +9,59 @@ import { calculateSolarPotential, validateInputs } from './services/calculationS
 import { DEFAULT_LOCATION } from './utils/constants';
 import './App.css';
 
+// main component - connects everything together
 function App() {
-  // ==========================================
-  // State Management
-  // ==========================================
-  // Think of state as the app's memory - it remembers things like:
-  // - Where the user clicked on the map
-  // - What they typed in the form
-  // - The calculation results
-  // - Any errors that happened
 
-  // Form data - all the inputs from the user
+  // store form inputs
   const [formData, setFormData] = useState({
     latitude: '',
     longitude: '',
     roofArea: '',
-    panelEfficiency: '18', // Default to Monocrystalline (18%)
-    electricityRate: '8'   // Default electricity rate in India
+    panelEfficiency: '18', // default 18%
+    electricityRate: '8'   // default rate
   });
 
-  // Map position - where the marker is on the map
+  // store map pin location
   const [mapPosition, setMapPosition] = useState({
     lat: DEFAULT_LOCATION.latitude,
     lng: DEFAULT_LOCATION.longitude
   });
 
-  // Calculation results - the numbers we show after calculating
+  // store final calculations
   const [results, setResults] = useState(null);
 
-  // Solar data from NASA - raw data from the API
+  // store raw nasa api data
   const [solarData, setSolarData] = useState(null);
 
-  // Loading state - are we currently calculating?
+  // loading status
   const [isCalculating, setIsCalculating] = useState(false);
 
-  // Error message - if something goes wrong, we show this
+  // error message state
   const [error, setError] = useState(null);
 
-  // Results visibility - should we show the results section?
+  // toggle results view
   const [showResults, setShowResults] = useState(false);
 
-  // ==========================================
-  // Event Handlers
-  // ==========================================
-  // These functions respond to user actions
-
-  /**
-   * When user clicks on the map
-   * Update the marker position and form coordinates
-   */
+  // click map -> update marker and form coords
   const handleLocationSelect = async (lat, lng) => {
-    // Update map marker
     setMapPosition({ lat, lng });
 
-    // Update form inputs
     setFormData({
       ...formData,
       latitude: lat.toFixed(6),
       longitude: lng.toFixed(6)
     });
 
-    // Try to get the location name (optional, not critical)
+    // try getting place name (not required but nice to have)
     try {
       const locationName = await reverseGeocode(lat, lng);
-      if (locationName) {
-        console.log('Location:', locationName);
-      }
+      if (locationName) console.log('loc:', locationName);
     } catch (err) {
-      // Reverse geocoding failed, but that's okay
-      console.log('Could not get location name');
+      console.log('geo fail');
     }
   };
 
-  /**
-   * When user finds a location through search
-   * Update both map and form
-   */
+  // search location -> update map and form
   const handleLocationFound = (location) => {
     setMapPosition({ lat: location.lat, lng: location.lng });
     setFormData({
@@ -98,17 +69,14 @@ function App() {
       latitude: location.lat.toFixed(6),
       longitude: location.lng.toFixed(6)
     });
-    setError(null); // Clear any previous errors
+    setError(null);
   };
 
-  /**
-   * When user changes form inputs
-   * Update the form data
-   */
+  // form input change -> update state
   const handleFormChange = (newFormData) => {
     setFormData(newFormData);
 
-    // If user manually changed coordinates, update map marker
+    // sync map if user types coords manually
     const lat = parseFloat(newFormData.latitude);
     const lng = parseFloat(newFormData.longitude);
 
@@ -119,41 +87,36 @@ function App() {
     }
   };
 
-  /**
-   * When user clicks "Calculate Solar Potential"
-   * This is where the magic happens!
-   */
+  // calculate button clicked -> validate & fetch data
   const handleCalculate = async () => {
-    // Clear any previous errors and results
     setError(null);
     setShowResults(false);
 
-    // Get all the form values
     const lat = parseFloat(formData.latitude);
     const lng = parseFloat(formData.longitude);
     const roofArea = parseFloat(formData.roofArea);
     const efficiency = parseFloat(formData.panelEfficiency);
     const rate = parseFloat(formData.electricityRate);
 
-    // Step 1: Validate all inputs
+    // check if inputs are valid
     const validation = validateInputs(lat, lng, roofArea, efficiency, rate);
     if (!validation.isValid) {
       setError(validation.error);
-      return; // Stop here if validation failed
+      return;
     }
 
     try {
-      setIsCalculating(true); // Show loading spinner
+      setIsCalculating(true);
 
-      // Step 2: Fetch solar data from NASA (through our backend)
-      console.log('Fetching solar data for:', lat, lng);
+      // get solar data from backend
+      console.log('fetching data...', lat, lng);
       const solarResponse = await fetchSolarData(lat, lng);
 
       if (!solarResponse || !solarResponse.data) {
-        throw new Error('Invalid response from server');
+        throw new Error('bad server response');
       }
 
-      // Step 3: Calculate solar potential using the formulas
+      // do the math
       const calculationResults = calculateSolarPotential(
         roofArea,
         efficiency,
@@ -161,12 +124,12 @@ function App() {
         solarResponse.data.averageDailyIrradiance
       );
 
-      // Step 4: Save and display the results
+      // save results and show them
       setSolarData(solarResponse);
       setResults(calculationResults);
       setShowResults(true);
 
-      // Scroll to results section smoothly
+      // scroll down to results
       setTimeout(() => {
         const resultsSection = document.querySelector('.results-section');
         if (resultsSection) {
@@ -175,64 +138,41 @@ function App() {
       }, 100);
 
     } catch (err) {
-      // Something went wrong - show error message
-      console.error('Calculation error:', err);
-      setError(err.message || 'Failed to calculate solar potential. Please try again.');
+      console.error('calc error:', err);
+      setError(err.message || 'calc failed, try again');
     } finally {
-      setIsCalculating(false); // Hide loading spinner
+      setIsCalculating(false);
     }
   };
 
-  /**
-   * Handle errors from child components
-   */
-  const handleError = (errorMessage) => {
-    setError(errorMessage);
-  };
-
-  /**
-   * Clear error message
-   */
-  const clearError = () => {
-    setError(null);
-  };
-
-  // ==========================================
-  // Render the UI
-  // ==========================================
   return (
     <div className="App">
-      {/* Top banner with logo and title */}
       <Header />
 
-      {/* Main content area */}
       <main className="main-content">
         <div className="container">
 
-          {/* Two-column layout: Form on left, Map on right */}
           <div className="grid-layout">
 
-            {/* Left column: Input form */}
+            {/* left: form inputs */}
             <CalculatorForm
               formData={formData}
               onFormChange={handleFormChange}
               onLocationFound={handleLocationFound}
               onCalculate={handleCalculate}
               isCalculating={isCalculating}
-              onError={handleError}
+              onError={setError}
             />
 
-            {/* Right column: Interactive map */}
+            {/* right: map view */}
             <MapView
               position={mapPosition}
               onLocationSelect={handleLocationSelect}
             />
           </div>
 
-          {/* Error message (only shows if there's an error) */}
-          <ErrorMessage message={error} onClose={clearError} />
+          <ErrorMessage message={error} onClose={() => setError(null)} />
 
-          {/* Results section (only shows after calculation) */}
           <ResultsSection
             results={results}
             solarData={solarData}
@@ -242,12 +182,11 @@ function App() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="footer">
         <div className="container">
-          <p>Solar Potential Calculator | 6th Semester NON-CRT Project</p>
+          <p>Solar Potential Calculator | 6th Semester Project</p>
           <p className="footer-note">
-            Built with NASA POWER API, Leaflet Maps, and Chart.js
+            Powered by NASA POWER API & Leaflet
           </p>
         </div>
       </footer>
