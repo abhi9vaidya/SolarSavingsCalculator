@@ -62,12 +62,18 @@ body {
    Academic Header
    ============================================ */
 .header {
-    padding-bottom: 3rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
     border-bottom: 1px solid var(--color-border);
     margin-bottom: 2rem;
+    background: rgba(15, 23, 42, 0.4);
+}
+
+.header-content {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
+    /* Better center alignment for brand vs meta */
 }
 
 .brand h1 {
@@ -107,6 +113,8 @@ body {
     display: grid;
     grid-template-columns: 400px 1fr;
     gap: 2rem;
+    align-items: stretch;
+    /* Force children to same height */
 }
 
 @media (max-width: 1100px) {
@@ -121,6 +129,10 @@ body {
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: var(--shadow-pro);
+    height: 100%;
+    /* Stretch to fill grid cell */
+    display: flex;
+    flex-direction: column;
 }
 
 .card-header {
@@ -226,9 +238,15 @@ body {
    Map Implementation
    ============================================ */
 .map-container {
-    height: 600px;
     padding: 0;
     overflow: hidden;
+    min-height: 600px;
+    /* Base height */
+}
+
+.map-container .card-header {
+    text-align: center;
+    padding-top: 1.5rem;
 }
 
 .map-wrapper {
@@ -247,6 +265,29 @@ body {
     top: 1rem;
     right: 1rem;
     z-index: 1000;
+}
+
+.btn-secondary {
+    padding: 0.6rem 1rem;
+    background: rgba(30, 41, 59, 0.9);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--color-border);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: var(--color-surface);
+    border-color: var(--color-primary);
+}
+
+.btn-secondary.active {
+    background: var(--color-primary);
+    color: #064E3B;
 }
 
 /* ============================================

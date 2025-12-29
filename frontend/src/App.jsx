@@ -194,11 +194,14 @@ function App() {
 
       <footer className="footer">
         <div className="container">
-          <p>© 2024 Solar Portal | Project Submission</p>
+          <p>© 2025 Solar Portal | Project Submission</p>
           <div className="footer-meta">
-            Developed by Student | 6th Semester Major Project | Dept. of Computer Science
+            Developed by <strong>Jiya Divyanshi Pandita</strong> & <strong>Abhinav Vaidya</strong>
           </div>
-          <p className="footer-note" style={{ marginTop: '0.5rem', opacity: 0.6, fontSize: '0.7rem' }}>
+          <div className="project-stamp" style={{ marginTop: '0.25rem', fontSize: '0.65rem' }}>
+            6th Semester NON-CRT Project | Dept. of Computer Science
+          </div>
+          <p className="footer-note" style={{ marginTop: '1rem', opacity: 0.6, fontSize: '0.7rem' }}>
             Data Powered by NASA POWER API & Nominatim OpenStreetMap
           </p>
         </div>

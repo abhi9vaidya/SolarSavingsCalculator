@@ -104,9 +104,6 @@ function MapView({ position, onLocationSelect }) {
                     )}
                 </MapContainer>
 
-                <div className="map-legend">
-                    <small>Satellite view enabled for better roof visibility</small>
-                </div>
             </div>
         </div>
     );
