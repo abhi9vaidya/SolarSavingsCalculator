@@ -91,7 +91,7 @@ const MonthlyChart = ({ monthlyData, roofArea, efficiency }) => {
                 borderWidth: 1,
                 displayColors: false,
                 callbacks: {
-                    label: (context) => `⚡ ${context.raw.toLocaleString()} kWh`
+                    label: (context) => `⚡ ${context.raw.toLocaleString('en-IN')} kWh`
                 }
             }
         },

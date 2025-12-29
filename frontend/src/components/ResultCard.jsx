@@ -40,8 +40,7 @@ const ResultCard = ({ title, value, unit, icon, description, color }) => {
             <div className="card-content">
                 <h4 className="card-title">{title}</h4>
                 <div className="card-value">
-                    {/* format number with commas like 1,000 and handle decimals */}
-                    {displayValue.toLocaleString(undefined, {
+                    {displayValue.toLocaleString('en-IN', {
                         minimumFractionDigits: value % 1 === 0 ? 0 : 1,
                         maximumFractionDigits: 1
                     })}
