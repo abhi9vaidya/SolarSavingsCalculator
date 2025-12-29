@@ -260,6 +260,10 @@ body {
     filter: grayscale(0.5) contrast(1.1) brightness(0.8) invert(1) hue-rotate(180deg);
 }
 
+.satellite-active .leaflet-container {
+    filter: none !important;
+}
+
 .map-controls {
     position: absolute;
     top: 1rem;

@@ -58,23 +58,22 @@ function MapView({ position, onLocationSelect }) {
     const [isSatelliteView, setIsSatelliteView] = React.useState(false);
 
     return (
-        <div className="map-container card">
+        <div className={`map-container card ${isSatelliteView ? 'satellite-active' : ''}`}>
             <div className="card-header">
                 <h2>Select Location</h2>
                 <p className="subtitle">Click on map or search to pinpoint roof</p>
             </div>
 
-            <div className="map-controls">
-                <button
-                    type="button"
-                    className={`btn-secondary ${isSatelliteView ? 'active' : ''}`}
-                    onClick={() => setIsSatelliteView(!isSatelliteView)}
-                >
-                    {isSatelliteView ? 'Street View' : 'Satellite View'}
-                </button>
-            </div>
-
             <div className="map-wrapper">
+                <div className="map-controls">
+                    <button
+                        type="button"
+                        className={`btn-secondary ${isSatelliteView ? 'active' : ''}`}
+                        onClick={() => setIsSatelliteView(!isSatelliteView)}
+                    >
+                        {isSatelliteView ? 'Street View' : 'Satellite View'}
+                    </button>
+                </div>
                 <MapContainer
                     center={displayPosition}
                     zoom={5}
