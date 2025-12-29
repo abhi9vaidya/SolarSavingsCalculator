@@ -21,6 +21,17 @@ function App() {
     electricityRate: '7'   // Indian national avg
   });
 
+  // Theme Management
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const saved = localStorage.getItem('theme');
+    return saved ? saved === 'dark' : true;
+  });
+
+  useEffect(() => {
+    document.body.className = isDarkMode ? 'dark-theme' : 'light-theme';
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
+
   // store map pin location
   const [mapPosition, setMapPosition] = useState({
     lat: DEFAULT_LOCATION.latitude,
@@ -152,8 +163,11 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <Header />
+    <div className={`app-wrapper ${isDarkMode ? 'dark-theme' : 'light-theme'}`}>
+      <Header
+        isDarkMode={isDarkMode}
+        toggleTheme={() => setIsDarkMode(!isDarkMode)}
+      />
 
       <main className="main-content">
         <div className="container">
