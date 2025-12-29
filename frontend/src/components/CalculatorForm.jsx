@@ -6,7 +6,9 @@ const CalculatorForm = ({
     onFormChange,
     onLocationFound,
     onCalculate,
-    isCalculating
+    isCalculating,
+    searchQuery,
+    setSearchQuery
 }) => {
 
     const handleChange = (e) => {
@@ -33,7 +35,11 @@ const CalculatorForm = ({
                 {/* search box component */}
                 <div className="form-group">
                     <label>Search Location</label>
-                    <LocationSearch onLocationFound={onLocationFound} />
+                    <LocationSearch
+                        onLocationFound={onLocationFound}
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                    />
                 </div>
 
                 <form onSubmit={handleSubmit}>

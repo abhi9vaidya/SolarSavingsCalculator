@@ -3,10 +3,10 @@
 export const API_BASE_URL = 'http://localhost:3000/api';
 export const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org';
 
-// default start location (delhi)
+// default start location (India Center)
 export const DEFAULT_LOCATION = {
-    latitude: 28.6139,
-    longitude: 77.2090
+    latitude: 20.5937,
+    longitude: 78.9629
 };
 
 export const MONTHS = [

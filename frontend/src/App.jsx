@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from './components/Header';
 import CalculatorForm from './components/CalculatorForm';
 import MapView from './components/MapView';
@@ -42,35 +42,41 @@ function App() {
   // toggle results view
   const [showResults, setShowResults] = useState(false);
 
+  // search query state (lifted for map sync)
+  const [searchQuery, setSearchQuery] = useState('');
+
   // click map -> update marker and form coords
-  const handleLocationSelect = async (lat, lng) => {
+  const handleLocationSelect = useCallback(async (lat, lng, name = null) => {
     setMapPosition({ lat, lng });
 
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       latitude: lat.toFixed(6),
       longitude: lng.toFixed(6)
-    });
+    }));
 
-    // try getting place name (not required but nice to have)
-    try {
-      const locationName = await reverseGeocode(lat, lng);
-      if (locationName) console.log('loc:', locationName);
-    } catch (err) {
-      console.log('geo fail');
+    // If name provided (from search), use it directly (shortened/user-typed)
+    // If not (from map click), reverse geocode
+    if (name) {
+      setSearchQuery(name.split(',').slice(0, 3).join(','));
+    } else {
+      // Validation: only reverse geocode on map clicks
+      try {
+        const locationName = await reverseGeocode(lat, lng);
+        if (locationName) {
+          setSearchQuery(locationName.split(',').slice(0, 3).join(','));
+        }
+      } catch (err) {
+        console.log('geo fail');
+      }
     }
-  };
+  }, [setMapPosition, setFormData, setSearchQuery]); // Dependencies empty as setters are stable
 
   // search location -> update map and form
-  const handleLocationFound = (location) => {
-    setMapPosition({ lat: location.lat, lng: location.lng });
-    setFormData({
-      ...formData,
-      latitude: location.lat.toFixed(6),
-      longitude: location.lng.toFixed(6)
-    });
+  const handleLocationFound = useCallback((data) => {
+    handleLocationSelect(data.lat, data.lng, data.name);
     setError(null);
-  };
+  }, [handleLocationSelect]);
 
   // form input change -> update state
   const handleFormChange = (newFormData) => {
@@ -162,6 +168,10 @@ function App() {
               onCalculate={handleCalculate}
               isCalculating={isCalculating}
               onError={setError}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              currentLat={formData.latitude}
+              currentLng={formData.longitude}
             />
 
             {/* right: map view */}
@@ -184,9 +194,12 @@ function App() {
 
       <footer className="footer">
         <div className="container">
-          <p>Solar Potential Calculator | 6th Semester Project</p>
-          <p className="footer-note">
-            Powered by NASA POWER API & Leaflet
+          <p>© 2024 Solar Portal | Project Submission</p>
+          <div className="footer-meta">
+            Developed by Student | 6th Semester Major Project | Dept. of Computer Science
+          </div>
+          <p className="footer-note" style={{ marginTop: '0.5rem', opacity: 0.6, fontSize: '0.7rem' }}>
+            Data Powered by NASA POWER API & Nominatim OpenStreetMap
           </p>
         </div>
       </footer>

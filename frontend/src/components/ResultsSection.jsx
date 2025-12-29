@@ -52,6 +52,7 @@ const ResultsSection = ({ results, solarData, formData, isVisible }) => {
             {/* monthly chart visualization */}
             {solarData?.data?.monthlyData && (
                 <MonthlyChart
+                    key={`${results.annualEnergy}-${formData.roofArea}`}
                     monthlyData={solarData.data.monthlyData}
                     roofArea={formData.roofArea}
                     efficiency={formData.panelEfficiency}
