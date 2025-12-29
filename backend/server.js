@@ -23,16 +23,18 @@ const PORT = process.env.PORT || 3000;
 app.use(cors()); // Enable CORS for frontend requests
 app.use(express.json()); // Parse JSON request bodies
 
-// Serve static files from frontend folder
-app.use(express.static(path.join(__dirname, '../frontend')));
+// Serve static files from React build folder
+// In development, the React app runs on port 5173
+// In production, we serve the built files from frontend/dist
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 /**
  * Health check endpoint
  * Used to verify server is running
  */
 app.get('/api/health', (req, res) => {
-    res.json({ 
-        status: 'ok', 
+    res.json({
+        status: 'ok',
         message: 'Solar Calculator API is running',
         timestamp: new Date().toISOString()
     });
@@ -84,7 +86,7 @@ app.get('/api/solar', async (req, res) => {
 
         // Fetch solar data from NASA POWER API
         const solarData = await solarApiService.getSolarData(latitude, longitude);
-        
+
         res.json({
             success: true,
             data: solarData,
@@ -100,9 +102,10 @@ app.get('/api/solar', async (req, res) => {
     }
 });
 
-// Serve frontend for all other routes (SPA support)
+// Serve React app for all other routes (SPA support)
+// This ensures React Router works correctly if we add it later
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 // Start server

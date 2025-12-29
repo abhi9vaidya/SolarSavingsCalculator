@@ -1,46 +1,49 @@
 # ☀️ Solar Potential Calculator
 
-A web-based application that estimates rooftop solar energy potential using real-time NASA solar data and satellite imagery.
+A web-based application that estimates rooftop solar energy potential using real-time NASA solar data and interactive maps.
 
-**6th Semester NON CRT Project**
+**6th Semester NON-CRT Major Project**
 
 ---
 
 ## 🎯 Project Overview
 
-This application helps users estimate their rooftop solar energy potential by combining:
-- User-provided roof area
-- Real-time solar irradiance data from NASA POWER API
-- Interactive map with satellite imagery for location verification
-- Dynamic electricity tariff-based savings calculation
+This application helps users estimate how much solar energy their rooftop can generate. It combines:
 
-### What it Calculates
+- **User-provided roof area** - You tell us how big your roof is
+- **Real-time solar data from NASA** - We fetch actual sunlight data for your location
+- **Interactive map** - Click anywhere to select your location
+- **Cost savings calculation** - See how much money you can save
 
-1. **Annual Solar Energy Generation (kWh)**
-2. **Estimated Annual Cost Savings (₹)**
-3. **Environmental Impact (CO₂ Reduction)**
+### What It Calculates
+
+| Output | Description |
+|--------|-------------|
+| ⚡ Annual Energy | How many kWh of electricity your solar panels can generate |
+| 💰 Annual Savings | How much money you'll save on electricity bills (in ₹) |
+| 🌱 CO₂ Reduction | Your contribution to reducing carbon emissions (in kg) |
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- HTML5
-- CSS3 (Modern, responsive design)
-- JavaScript (Vanilla)
-- Leaflet.js (Maps)
-- Chart.js (Visualizations)
+### Frontend (React)
+- **React 18** - Modern UI framework
+- **Vite** - Fast build tool and development server
+- **Leaflet.js** - Interactive maps with OpenStreetMap
+- **Chart.js** - Beautiful data visualizations
+- **CSS3** - Responsive, modern design
 
-### Backend
-- Node.js
-- Express.js
-- node-cache (API response caching)
+### Backend (Node.js)
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web server framework
+- **node-cache** - Caching API responses for better performance
 
-### APIs & Services
-- **NASA POWER API** - Real-time solar irradiance data
-- **OpenStreetMap** - Interactive maps
-- **ESRI World Imagery** - Satellite imagery
-- **Nominatim** - Geocoding (location search)
+### External APIs
+- **NASA POWER API** - Provides real solar irradiance data based on satellite measurements
+- **OpenStreetMap** - Free map tiles
+- **ESRI World Imagery** - Satellite view
+- **Nominatim** - Location search (geocoding)
 
 ---
 
@@ -49,17 +52,39 @@ This application helps users estimate their rooftop solar energy potential by co
 ```
 SolarSavingsCalculator/
 ├── backend/
-│   ├── server.js           # Express server
-│   ├── solarApiService.js  # NASA API integration
-│   ├── cacheService.js     # Response caching
-│   └── package.json        # Dependencies
+│   ├── server.js           # Express server - handles API requests
+│   ├── solarApiService.js  # Fetches data from NASA POWER API
+│   ├── cacheService.js     # Caches responses to reduce API calls
+│   └── package.json        # Backend dependencies
+│
 ├── frontend/
-│   ├── index.html          # Main HTML structure
-│   ├── styles.css          # CSS design system
-│   ├── app.js              # Main application logic
-│   └── charts.js           # Chart.js integration
-└── utils/
-    └── calculations.js     # Solar calculation formulas
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   │   ├── Header.jsx          # Top banner with logo
+│   │   │   ├── MapView.jsx         # Interactive Leaflet map
+│   │   │   ├── LocationSearch.jsx  # Search for places
+│   │   │   ├── CalculatorForm.jsx  # Input form
+│   │   │   ├── ResultsSection.jsx  # Displays results
+│   │   │   ├── ResultCard.jsx      # Individual result card
+│   │   │   ├── MonthlyChart.jsx    # Bar chart for monthly data
+│   │   │   └── ErrorMessage.jsx    # Error display
+│   │   │
+│   │   ├── services/       # Business logic
+│   │   │   ├── apiService.js       # API calls to backend
+│   │   │   └── calculationService.js # Solar energy formulas
+│   │   │
+│   │   ├── utils/
+│   │   │   └── constants.js        # Shared constants
+│   │   │
+│   │   ├── App.jsx         # Main component
+│   │   ├── App.css         # Styles
+│   │   └── main.jsx        # Entry point
+│   │
+│   ├── index.html          # HTML template
+│   ├── vite.config.js      # Vite configuration
+│   └── package.json        # Frontend dependencies
+│
+└── README.md
 ```
 
 ---
@@ -67,141 +92,189 @@ SolarSavingsCalculator/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- npm (Node Package Manager)
+- **Node.js** v18 or higher
+- **npm** (comes with Node.js)
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone the repository**
 ```bash
 git clone https://github.com/abhi9vaidya/SolarSavingsCalculator.git
 cd SolarSavingsCalculator
 ```
 
-2. Install backend dependencies:
+2. **Install backend dependencies**
 ```bash
 cd backend
 npm install
 ```
 
-3. Start the server:
+3. **Install frontend dependencies**
 ```bash
+cd ../frontend
+npm install
+```
+
+### Running the Application
+
+#### Option 1: Development Mode (Recommended for testing)
+
+Start the backend server:
+```bash
+cd backend
 npm start
 ```
 
-4. Open your browser and navigate to:
+In a new terminal, start the React dev server:
+```bash
+cd frontend
+npm run dev
 ```
-http://localhost:3000
+
+Open: **http://localhost:5173**
+
+#### Option 2: Production Mode
+
+Build the frontend:
+```bash
+cd frontend
+npm run build
 ```
+
+Start the backend (serves the built frontend):
+```bash
+cd backend
+npm start
+```
+
+Open: **http://localhost:3000**
 
 ---
 
 ## 📖 How to Use
 
-1. **Select Location**
-   - Click on the map to select your location, OR
-   - Enter a city/address in the search box, OR
-   - Manually enter latitude and longitude
+### Step 1: Select Your Location
+- **Click on the map** to drop a pin at your location, OR
+- **Search** for your city/address using the search box, OR
+- **Enter coordinates** manually
 
-2. **Toggle Satellite View**
-   - Use the satellite button to verify your roof location visually
+### Step 2: Switch to Satellite View (Optional)
+- Click "Satellite View" to see actual rooftops
+- Helps you verify you've selected the right location
 
-3. **Enter Parameters**
-   - **Roof Area**: Enter your usable roof area in square meters
-   - **Panel Efficiency**: Select solar panel efficiency (15-22%)
-   - **Electricity Rate**: Enter your electricity cost per kWh
+### Step 3: Enter Your Details
+| Field | Description |
+|-------|-------------|
+| Roof Area | Your usable roof area in square meters (m²) |
+| Panel Type | Select efficiency: 16% (basic) to 22% (premium) |
+| Electricity Rate | Your current electricity cost per unit (₹/kWh) |
 
-4. **Calculate**
-   - Click "Calculate Solar Potential" to see results
-   - View annual energy generation, cost savings, and CO₂ reduction
-   - Check the monthly energy chart for seasonal variations
+### Step 4: Calculate
+- Click **"Calculate Solar Potential"**
+- View your results with animated counters
+- Check the monthly chart to see seasonal variations
 
 ---
 
-## 🧮 Calculation Formulas
+## 🧮 How the Calculations Work
 
 ### Annual Energy Generation
 ```
-Annual Energy (kWh) = Roof Area × Panel Efficiency × Avg Daily Irradiance × 365
+Annual Energy (kWh) = Roof Area × Panel Efficiency × Daily Sunlight × 365 days
 ```
+**Example:** 50 m² roof × 18% efficiency × 5 kWh/m²/day × 365 = **16,425 kWh/year**
 
 ### Annual Cost Savings
 ```
 Annual Savings (₹) = Annual Energy × Electricity Rate
 ```
+**Example:** 16,425 kWh × ₹8/kWh = **₹1,31,400/year**
 
 ### CO₂ Emission Reduction
 ```
-CO₂ Saved (kg/year) = Annual Energy × 0.82
+CO₂ Saved (kg) = Annual Energy × 0.82
 ```
-*Using 0.82 kg CO₂/kWh as India's grid emission factor*
+**Example:** 16,425 kWh × 0.82 = **13,469 kg CO₂/year**
+
+> The 0.82 factor is based on India's average grid emission factor
 
 ---
 
 ## 🔌 API Endpoints
 
-### Health Check
-```
-GET /api/health
-```
-Returns server status.
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/health` | GET | Check if server is running |
+| `/api/solar?lat=28.6&lon=77.2` | GET | Get solar data for coordinates |
 
-### Solar Data
-```
-GET /api/solar?lat={latitude}&lon={longitude}
-```
-Returns solar irradiance data for the specified location.
-
-**Example:**
-```
-GET /api/solar?lat=28.6139&lon=77.2090
+### Example Response
+```json
+{
+  "success": true,
+  "data": {
+    "averageDailyIrradiance": 5.23,
+    "monthlyData": [...]
+  },
+  "location": {
+    "latitude": 28.6,
+    "longitude": 77.2
+  }
+}
 ```
 
 ---
 
-## 🗣️ Viva Defense Notes
+## 🗣️ Viva Questions & Answers
 
-### Why NASA POWER API?
-"NASA POWER API is free, reliable, and provides scientific-grade solar irradiance data based on satellite observations. It doesn't require authentication and is widely used in solar energy research."
+### Q: Why did you choose React?
+> "React is a modern, component-based framework that makes it easy to build interactive UIs. It's widely used in the industry and has great documentation for learning."
 
-### Why satellite imagery?
-"Satellite imagery is used for location validation and realistic visualization, while roof area is manually entered to maintain accuracy and academic simplicity."
+### Q: Why NASA POWER API?
+> "NASA POWER API provides free, reliable, scientific-grade solar irradiance data based on satellite observations. It doesn't require authentication and is trusted for solar energy research."
 
-### Why not automatic roof detection?
-"Automatic roof detection would require complex computer vision/ML techniques which are beyond the scope of this educational project. Manual input ensures accuracy and keeps the project focused on solar calculations and API integration."
+### Q: Why not detect roof area automatically?
+> "Automatic roof detection would require computer vision and machine learning, which is beyond the scope of this project. Manual input keeps the focus on solar calculations and API integration."
 
-### Calculation Assumptions
-- System losses not included (simplified for academic purposes)
-- Uses average daily irradiance × 365 for annual estimate
-- CO₂ factor of 0.82 kg/kWh based on Indian grid average
+### Q: What are the limitations?
+> "This is an educational estimate. Real-world factors like panel orientation, shading, system losses (10-25%), and temperature effects aren't included."
+
+### Q: How accurate is it?
+> "The solar irradiance data from NASA is accurate. The calculation gives a theoretical maximum. Real installations typically achieve 75-90% of this estimate."
 
 ---
 
 ## ⚠️ Limitations
 
-- **Educational Estimate**: Results are approximate and for educational purposes only
-- **No System Losses**: Real-world systems have 10-25% losses from inverters, wiring, etc.
-- **No Orientation Data**: Doesn't account for roof tilt or orientation
-- **No Shading Analysis**: Doesn't consider shading from nearby objects
-- **No Temperature Effects**: High temperatures can reduce panel efficiency
+| Limitation | Impact |
+|------------|--------|
+| No system losses | Real systems lose 10-25% to inverters, wiring |
+| No orientation data | Assumes optimal roof tilt/direction |
+| No shading analysis | Doesn't consider trees, buildings |
+| No temperature effects | High heat reduces efficiency |
+
+> **Note:** This is an educational tool. For actual solar installation, consult a professional.
 
 ---
 
-## 📝 License
+## 🧑‍� Authors
 
-This project is for educational purposes (6th Semester NON CRT Project).
+**Jiya Divyanshi Pandita** & **Abhinav Vaidya**
 
----
-
-## 👤 Author
-
-**Jiya Divyanshi Pandita** & **Abhinav Vaidya** 
+6th Semester, Computer Science Engineering
 
 ---
 
 ## 🙏 Acknowledgments
 
-- [NASA POWER Project](https://power.larc.nasa.gov/) for solar data API
-- [OpenStreetMap](https://www.openstreetmap.org/) for map tiles
-- [Leaflet.js](https://leafletjs.com/) for interactive maps
-- [Chart.js](https://www.chartjs.org/) for data visualization
+- [NASA POWER Project](https://power.larc.nasa.gov/) - Solar irradiance data
+- [OpenStreetMap](https://www.openstreetmap.org/) - Map tiles
+- [Leaflet.js](https://leafletjs.com/) - Interactive maps
+- [Chart.js](https://www.chartjs.org/) - Data visualization
+- [React](https://react.dev/) - UI framework
+- [Vite](https://vitejs.dev/) - Build tool
+
+---
+
+## 📄 License
+
+This project is created for educational purposes (6th Semester NON-CRT Project).
