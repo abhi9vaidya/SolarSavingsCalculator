@@ -18,7 +18,7 @@ function App() {
     longitude: '',
     roofArea: '',
     panelEfficiency: '18', // default 18%
-    electricityRate: '8'   // default rate
+    electricityRate: '7'   // Indian national avg
   });
 
   // store map pin location

@@ -90,7 +90,7 @@ const LocationSearch = ({ onLocationFound,
                     value={inputValue}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
-                    placeholder="Search city (e.g. Mumbai)..."
+                    placeholder="Search city (e.g. Nagpur)..."
                     autoComplete="off"
                 />
                 <button className="search-btn-icon" onClick={handleSearch} disabled={isSearching} title="Search Location">
