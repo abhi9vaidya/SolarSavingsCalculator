@@ -54,7 +54,7 @@ async function getSolarData(latitude, longitude) {
         format: 'JSON'
     });
 
-    console.log(`Fetching solar data from NASA POWER API for: ${latitude}, ${longitude}`);
+
 
     try {
         const response = await fetch(apiUrl);

@@ -49,11 +49,9 @@ function get(lat, lon) {
     const data = cache.get(key);
 
     if (data) {
-        console.log(`Cache HIT for location: ${lat}, ${lon}`);
         return data;
     }
 
-    console.log(`Cache MISS for location: ${lat}, ${lon}`);
     return null;
 }
 
